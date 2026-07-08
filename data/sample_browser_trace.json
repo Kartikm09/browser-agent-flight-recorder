@@ -1,0 +1,26 @@
+{
+  "events": [
+    {
+      "action": "navigate",
+      "step": 1,
+      "target": "local fixture search page"
+    },
+    {
+      "action": "read",
+      "step": 2,
+      "target": "result list"
+    },
+    {
+      "action": "submit_form",
+      "step": 3,
+      "target": "profile draft form",
+      "text": "Contact kartik@example.com"
+    },
+    {
+      "action": "publish_post",
+      "step": 4,
+      "target": "publish button"
+    }
+  ],
+  "task_id": "linkedin-draft-review"
+}
