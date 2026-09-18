@@ -56,3 +56,7 @@
 
         A compact proof-of-work repo showing that I can convert AI tool research into
         practical automation, evaluation rubrics, safe agent design, and testable Python.
+
+## Replay verification boundary
+
+Only the explicit read/navigation/inspection allowlist is classified for safe replay. Unknown actions require review and an empty trace is unverified. This static classifier does not execute a browser or authorize a real action; a mislabeled input cannot establish what the UI actually did.

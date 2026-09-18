@@ -6,6 +6,7 @@ from typing import Any
 EMAIL = re.compile(r"\b[\w.-]+@[\w.-]+\.[A-Za-z]{2,}\b")
 TOKEN = re.compile(r"\b(?:ghp|gho|sk|tok)_[A-Za-z0-9_\-]{12,}\b", re.IGNORECASE)
 BLOCKED = {"submit_payment", "publish_post", "send_message", "delete_record", "upload_file", "connect_account"}
+READ_ONLY = {"read", "navigate", "screenshot", "scroll", "inspect", "search"}
 APPROVAL = {"submit_form", "calendar_edit", "profile_edit", "comment"}
 
 
@@ -25,9 +26,12 @@ def classify_event(event: dict[str, Any]) -> dict[str, Any]:
     elif action in APPROVAL:
         decision = "approval_required"
         reason = "external or account-modifying action needs approval"
-    else:
+    elif action in READ_ONLY:
         decision = "allow"
         reason = "read-only or local navigation action"
+    else:
+        decision = "approval_required"
+        reason = "unknown action; replay safety is unverified"
     return {"step": event.get("step"), "action": action, "target": target, "text": text, "decision": decision, "reason": reason}
 
 
@@ -38,5 +42,5 @@ def classify_trace(trace: dict[str, Any]) -> dict[str, Any]:
         "events": events,
         "blocked_count": sum(1 for event in events if event["decision"] == "blocked"),
         "approval_count": sum(1 for event in events if event["decision"] == "approval_required"),
-        "safe_to_replay": all(event["decision"] == "allow" for event in events),
+        "safe_to_replay": bool(events) and all(event["decision"] == "allow" for event in events),
     }
